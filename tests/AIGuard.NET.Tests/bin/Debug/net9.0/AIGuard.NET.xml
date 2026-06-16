@@ -512,6 +512,11 @@
             Gets or sets the model identifier (e.g., "gpt-4", "claude-3").
             </summary>
         </member>
+        <member name="P:AIGuard.NET.Models.ValidationContext.SourceDocuments">
+            <summary>
+            Gets or sets the source documents provided to the model (used for hallucination detection).
+            </summary>
+        </member>
         <member name="P:AIGuard.NET.Models.ValidationContext.ConversationId">
             <summary>
             Gets or sets the conversation or request identifier for correlation.
@@ -903,6 +908,27 @@
         <member name="T:AIGuard.NET.Validators.Input.TokenBudgetValidator">
             <summary>
             Enforces a token limit on the input content.
+            </summary>
+        </member>
+        <member name="T:AIGuard.NET.Validators.Output.FactCheckingValidator">
+            <summary>
+            Cross-references claims in the model output against external knowledge via an LLM judge.
+            </summary>
+        </member>
+        <member name="M:AIGuard.NET.Validators.Output.FactCheckingValidator.#ctor(AIGuard.NET.Retry.ILlmClient)">
+            <summary>
+            Initializes a new FactCheckingValidator.
+            </summary>
+        </member>
+        <member name="T:AIGuard.NET.Validators.Output.HallucinationValidator">
+            <summary>
+            Detects hallucinations by verifying if the output is grounded in the provided source documents.
+            Uses an ILlmClient to perform 'LLM-as-a-judge' evaluation.
+            </summary>
+        </member>
+        <member name="M:AIGuard.NET.Validators.Output.HallucinationValidator.#ctor(AIGuard.NET.Retry.ILlmClient)">
+            <summary>
+            Initializes a new HallucinationValidator with an optional LLM client for evaluation.
             </summary>
         </member>
         <member name="T:AIGuard.NET.Validators.Output.JsonSchemaValidator">

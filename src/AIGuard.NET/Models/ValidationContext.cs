@@ -21,6 +21,11 @@ public sealed class ValidationContext
     public string? ModelId { get; set; }
 
     /// <summary>
+    /// Gets or sets the source documents provided to the model (used for hallucination detection).
+    /// </summary>
+    public IReadOnlyList<string>? SourceDocuments { get; set; }
+
+    /// <summary>
     /// Gets or sets the conversation or request identifier for correlation.
     /// </summary>
     public string? ConversationId { get; set; }
