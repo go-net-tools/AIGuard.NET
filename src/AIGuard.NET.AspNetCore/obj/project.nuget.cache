@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "dgSpecHash": "R+bO9rSClKI=",
+  "success": true,
+  "projectFilePath": "E:\\Utility\\src\\AIGuard.NET.AspNetCore\\AIGuard.NET.AspNetCore.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\MSG\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\9.0.0\\microsoft.extensions.dependencyinjection.abstractions.9.0.0.nupkg.sha512",
+    "C:\\Users\\MSG\\.nuget\\packages\\microsoft.extensions.logging.abstractions\\9.0.0\\microsoft.extensions.logging.abstractions.9.0.0.nupkg.sha512",
+    "C:\\Users\\MSG\\.nuget\\packages\\system.text.json\\9.0.17\\system.text.json.9.0.17.nupkg.sha512"
+  ],
+  "logs": []
+}

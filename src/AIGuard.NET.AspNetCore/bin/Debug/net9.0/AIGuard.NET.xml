@@ -1,0 +1,1005 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>AIGuard.NET</name>
+    </assembly>
+    <members>
+        <member name="T:AIGuard.NET.AIGuard">
+            <summary>
+            Main orchestrator class for AIGuard.NET validation.
+            </summary>
+        </member>
+        <member name="M:AIGuard.NET.AIGuard.#ctor(AIGuard.NET.Pipeline.GuardPipeline,AIGuard.NET.AIGuardOptions)">
+            <summary>
+            Initializes a new instance of the AIGuard class.
+            </summary>
+        </member>
+        <member name="M:AIGuard.NET.AIGuard.CreateBuilder">
+            <summary>
+            Creates a builder to construct an AIGuard instance.
+            </summary>
+        </member>
+        <member name="M:AIGuard.NET.AIGuard.ExecuteAsync(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Validates both input and output.
+            </summary>
+        </member>
+        <member name="M:AIGuard.NET.AIGuard.ValidateInputAsync(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Validates the given input content against input validators.
+            </summary>
+        </member>
+        <member name="M:AIGuard.NET.AIGuard.ValidateOutputAsync(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Validates the given output content against output validators.
+            </summary>
+        </member>
+        <member name="M:AIGuard.NET.AIGuard.RedactPiiAsync(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Convenience method for redacting PII from text.
+            </summary>
+        </member>
+        <member name="M:AIGuard.NET.AIGuard.CheckContentSafetyAsync(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Convenience method for checking content safety.
+            </summary>
+        </member>
+        <member name="T:AIGuard.NET.AIGuardBuilder">
+            <summary>
+            Fluent builder for constructing an AIGuard instance.
+            </summary>
+        </member>
+        <member name="M:AIGuard.NET.AIGuardBuilder.AddValidator``1">
+            <summary>
+            Adds a validator of the specified type with default configuration.
+            </summary>
+        </member>
+        <member name="M:AIGuard.NET.AIGuardBuilder.AddValidator``1(System.Action{``0})">
+            <summary>
+            Adds a validator of the specified type and configures it.
+            </summary>
+        </member>
+        <member name="M:AIGuard.NET.AIGuardBuilder.AddValidator(AIGuard.NET.Validators.IGuardValidator)">
+            <summary>
+            Adds a specific validator instance.
+            </summary>
+        </member>
+        <member name="M:AIGuard.NET.AIGuardBuilder.WithOptions(System.Action{AIGuard.NET.AIGuardOptions})">
+            <summary>
+            Configures the AIGuard options.
+            </summary>
+        </member>
+        <member name="M:AIGuard.NET.AIGuardBuilder.WithStopOnFirstFailure(System.Boolean)">
+            <summary>
+            Configures whether to stop on the first validation failure.
+            </summary>
+        </member>
+        <member name="M:AIGuard.NET.AIGuardBuilder.WithMaxRetries(System.Int32)">
+            <summary>
+            Configures the maximum number of retries.
+            </summary>
+        </member>
+        <member name="M:AIGuard.NET.AIGuardBuilder.WithTimeout(System.TimeSpan)">
+            <summary>
+            Configures the timeout for validation.
+            </summary>
+        </member>
+        <member name="M:AIGuard.NET.AIGuardBuilder.WithAuditLog(System.Boolean)">
+            <summary>
+            Configures whether audit logging is enabled.
+            </summary>
+        </member>
+        <member name="M:AIGuard.NET.AIGuardBuilder.WithMinConfidence(System.Double)">
+            <summary>
+            Configures the minimum confidence threshold for validation results.
+            </summary>
+        </member>
+        <member name="M:AIGuard.NET.AIGuardBuilder.Build">
+            <summary>
+            Builds the AIGuard instance.
+            </summary>
+        </member>
+        <member name="T:AIGuard.NET.AIGuardOptions">
+            <summary>
+            Configuration options for the AIGuard validation pipeline.
+            </summary>
+            <remarks>
+            Configure these values via the builder's fluent API methods
+            such as WithStopOnFirstFailure, WithMaxRetries, etc.
+            All properties carry production-safe defaults.
+            </remarks>
+        </member>
+        <member name="P:AIGuard.NET.AIGuardOptions.StopOnFirstFailure">
+            <summary>
+            When <see langword="true"/>, the pipeline will stop executing remaining validators
+            as soon as a validator returns an invalid result.
+            Default: <see langword="false"/>.
+            </summary>
+        </member>
+        <member name="P:AIGuard.NET.AIGuardOptions.DefaultThreatAction">
+            <summary>
+            The default action to take when a threat or policy violation is detected
+            and no validator-specific action has been configured.
+            Default: <see cref="F:AIGuard.NET.Models.ThreatAction.Block"/>.
+            </summary>
+        </member>
+        <member name="P:AIGuard.NET.AIGuardOptions.MaxRetries">
+            <summary>
+            Maximum number of automatic retries when a transient validator failure occurs.
+            Default: <c>0</c> (no retries).
+            </summary>
+            <remarks>
+            Retries apply to validators that throw exceptions, not to validation failures.
+            The pipeline will wait a short back-off period between retries.
+            </remarks>
+        </member>
+        <member name="P:AIGuard.NET.AIGuardOptions.Timeout">
+            <summary>
+            Maximum wall-clock time the pipeline is allowed to spend executing all validators
+            before cancellation is requested.
+            Default: <c>30 seconds</c>.
+            </summary>
+        </member>
+        <member name="P:AIGuard.NET.AIGuardOptions.EnableAuditLog">
+            <summary>
+            When <see langword="true"/>, the pipeline emits structured audit-log entries
+            for every validation run.
+            Default: <see langword="false"/>.
+            </summary>
+        </member>
+        <member name="P:AIGuard.NET.AIGuardOptions.MinConfidenceThreshold">
+            <summary>
+            The minimum confidence score (0.0–1.0) a validator must report for a validation
+            result to be considered meaningful. Results below this threshold are treated as
+            inconclusive and logged as warnings.
+            Default: <c>0.7</c>.
+            </summary>
+        </member>
+        <member name="P:AIGuard.NET.AIGuardOptions.OnViolationDetected">
+            <summary>
+            Optional callback invoked each time a <see cref="T:AIGuard.NET.Models.ValidationResult"/> reports
+            one or more violations. Useful for telemetry, alerting, or external audit sinks.
+            </summary>
+        </member>
+        <member name="T:AIGuard.NET.Audit.AuditEntry">
+            <summary>
+            Represents an entry in the AI guard audit log.
+            </summary>
+        </member>
+        <member name="M:AIGuard.NET.Audit.AuditEntry.#ctor(System.DateTimeOffset,System.String,System.String,System.String,AIGuard.NET.Models.GuardResult,System.TimeSpan,System.Collections.Generic.Dictionary{System.String,System.Object})">
+            <summary>
+            Represents an entry in the AI guard audit log.
+            </summary>
+        </member>
+        <member name="T:AIGuard.NET.Audit.AuditLogger">
+            <summary>
+            Orchestrates writing audit entries to multiple sinks.
+            </summary>
+        </member>
+        <member name="M:AIGuard.NET.Audit.AuditLogger.LogAsync(AIGuard.NET.Audit.AuditEntry,System.Threading.CancellationToken)">
+            <summary>
+            Logs an entry to all configured sinks.
+            </summary>
+        </member>
+        <member name="T:AIGuard.NET.Audit.ConsoleAuditSink">
+            <summary>
+            An audit sink that writes formatted entries to the console.
+            </summary>
+        </member>
+        <member name="T:AIGuard.NET.Audit.FileAuditSink">
+            <summary>
+            An audit sink that appends JSON serialized audit entries to a file.
+            </summary>
+        </member>
+        <member name="T:AIGuard.NET.Audit.IAuditSink">
+            <summary>
+            Defines a destination for audit logs.
+            </summary>
+        </member>
+        <member name="M:AIGuard.NET.Audit.IAuditSink.WriteAsync(AIGuard.NET.Audit.AuditEntry,System.Threading.CancellationToken)">
+            <summary>
+            Writes an audit entry to the sink.
+            </summary>
+        </member>
+        <member name="M:AIGuard.NET.Audit.IAuditSink.FlushAsync(System.Threading.CancellationToken)">
+            <summary>
+            Flushes any buffered audit entries to the underlying storage.
+            </summary>
+        </member>
+        <member name="T:AIGuard.NET.Models.AttackType">
+            <summary>
+            Classifies the type of prompt injection or adversarial attack detected.
+            </summary>
+        </member>
+        <member name="F:AIGuard.NET.Models.AttackType.InstructionOverride">
+            <summary>
+            An attempt to override or replace the system-level instructions given to the AI model.
+            </summary>
+        </member>
+        <member name="F:AIGuard.NET.Models.AttackType.SystemPromptExtraction">
+            <summary>
+            An attempt to extract or reveal the system prompt or hidden instructions.
+            </summary>
+        </member>
+        <member name="F:AIGuard.NET.Models.AttackType.RoleImpersonation">
+            <summary>
+            An attempt to impersonate a privileged role (e.g., "You are now DAN") to bypass restrictions.
+            </summary>
+        </member>
+        <member name="F:AIGuard.NET.Models.AttackType.ContextManipulation">
+            <summary>
+            An attempt to manipulate the conversation context to alter model behavior.
+            </summary>
+        </member>
+        <member name="F:AIGuard.NET.Models.AttackType.PayloadInjection">
+            <summary>
+            An attempt to inject executable or structured payloads (e.g., code, SQL, markup)
+            into the prompt to exploit downstream processing.
+            </summary>
+        </member>
+        <member name="F:AIGuard.NET.Models.AttackType.JailbreakAttempt">
+            <summary>
+            A general jailbreak attempt designed to circumvent the model's safety alignment.
+            </summary>
+        </member>
+        <member name="F:AIGuard.NET.Models.AttackType.Unknown">
+            <summary>
+            An attack type that could not be classified into a known category.
+            </summary>
+        </member>
+        <member name="T:AIGuard.NET.Models.ContentSafetyResult">
+            <summary>
+            Represents the result of a content safety analysis, with per-category scores
+            and a list of categories that exceeded the configured safety threshold.
+            </summary>
+            <param name="IsSafe">Whether the content is considered safe based on the configured threshold.</param>
+            <param name="CategoryScores">
+            Per-category safety scores, each normalized between 0.0 (safe) and 1.0 (most unsafe).
+            Keys are category names (e.g., "hate", "violence", "sexual", "self-harm").
+            </param>
+            <param name="FlaggedCategories">The set of category names that exceeded the safety threshold.</param>
+            <param name="OverallScore">
+            The overall safety risk score, normalized between 0.0 (safe) and 1.0 (most unsafe).
+            </param>
+        </member>
+        <member name="M:AIGuard.NET.Models.ContentSafetyResult.#ctor(System.Boolean,System.Collections.Generic.IReadOnlyDictionary{System.String,System.Double},System.Collections.Generic.IReadOnlyList{System.String},System.Double)">
+            <summary>
+            Represents the result of a content safety analysis, with per-category scores
+            and a list of categories that exceeded the configured safety threshold.
+            </summary>
+            <param name="IsSafe">Whether the content is considered safe based on the configured threshold.</param>
+            <param name="CategoryScores">
+            Per-category safety scores, each normalized between 0.0 (safe) and 1.0 (most unsafe).
+            Keys are category names (e.g., "hate", "violence", "sexual", "self-harm").
+            </param>
+            <param name="FlaggedCategories">The set of category names that exceeded the safety threshold.</param>
+            <param name="OverallScore">
+            The overall safety risk score, normalized between 0.0 (safe) and 1.0 (most unsafe).
+            </param>
+        </member>
+        <member name="P:AIGuard.NET.Models.ContentSafetyResult.IsSafe">
+            <summary>Whether the content is considered safe based on the configured threshold.</summary>
+        </member>
+        <member name="P:AIGuard.NET.Models.ContentSafetyResult.CategoryScores">
+            <summary>
+            Per-category safety scores, each normalized between 0.0 (safe) and 1.0 (most unsafe).
+            Keys are category names (e.g., "hate", "violence", "sexual", "self-harm").
+            </summary>
+        </member>
+        <member name="P:AIGuard.NET.Models.ContentSafetyResult.FlaggedCategories">
+            <summary>The set of category names that exceeded the safety threshold.</summary>
+        </member>
+        <member name="P:AIGuard.NET.Models.ContentSafetyResult.OverallScore">
+            <summary>
+            Gets the overall score clamped to the [0, 1] range.
+            </summary>
+        </member>
+        <member name="T:AIGuard.NET.Models.GuardResult">
+            <summary>
+            Represents the aggregate result of running all validators in a guard pipeline.
+            </summary>
+        </member>
+        <member name="P:AIGuard.NET.Models.GuardResult.IsSuccess">
+            <summary>
+            Gets or sets whether all validations passed successfully.
+            </summary>
+        </member>
+        <member name="P:AIGuard.NET.Models.GuardResult.SanitizedInput">
+            <summary>
+            Gets or sets the sanitized input (if modified by validators like PII redaction).
+            </summary>
+        </member>
+        <member name="P:AIGuard.NET.Models.GuardResult.ValidatedOutput">
+            <summary>
+            Gets or sets the validated output.
+            </summary>
+        </member>
+        <member name="P:AIGuard.NET.Models.GuardResult.InputValidations">
+            <summary>
+            Gets or sets the input validation results.
+            </summary>
+        </member>
+        <member name="P:AIGuard.NET.Models.GuardResult.OutputValidations">
+            <summary>
+            Gets or sets the output validation results.
+            </summary>
+        </member>
+        <member name="P:AIGuard.NET.Models.GuardResult.Elapsed">
+            <summary>
+            Gets or sets the elapsed time for the validation.
+            </summary>
+        </member>
+        <member name="P:AIGuard.NET.Models.GuardResult.RetryCount">
+            <summary>
+            Gets or sets the total number of retries attempted.
+            </summary>
+        </member>
+        <member name="P:AIGuard.NET.Models.GuardResult.HasInputViolations">
+            <summary>
+            Gets whether there are any input violations.
+            </summary>
+        </member>
+        <member name="P:AIGuard.NET.Models.GuardResult.HasOutputViolations">
+            <summary>
+            Gets whether there are any output violations.
+            </summary>
+        </member>
+        <member name="P:AIGuard.NET.Models.GuardResult.AllViolations">
+            <summary>
+            Gets all violations across both input and output.
+            </summary>
+        </member>
+        <member name="T:AIGuard.NET.Models.PiiEntity">
+            <summary>
+            Represents a single PII entity detected within content.
+            </summary>
+            <param name="Type">The classification of the PII entity.</param>
+            <param name="OriginalValue">The original, unredacted value found in the content.</param>
+            <param name="RedactedValue">
+            The redacted or masked replacement value (e.g., "***-**-1234" for an SSN).
+            </param>
+            <param name="StartIndex">The zero-based character index where the entity starts in the original text.</param>
+            <param name="Length">The character length of the original entity value.</param>
+        </member>
+        <member name="M:AIGuard.NET.Models.PiiEntity.#ctor(AIGuard.NET.Models.PiiEntityType,System.String,System.String,System.Int32,System.Int32)">
+            <summary>
+            Represents a single PII entity detected within content.
+            </summary>
+            <param name="Type">The classification of the PII entity.</param>
+            <param name="OriginalValue">The original, unredacted value found in the content.</param>
+            <param name="RedactedValue">
+            The redacted or masked replacement value (e.g., "***-**-1234" for an SSN).
+            </param>
+            <param name="StartIndex">The zero-based character index where the entity starts in the original text.</param>
+            <param name="Length">The character length of the original entity value.</param>
+        </member>
+        <member name="P:AIGuard.NET.Models.PiiEntity.Type">
+            <summary>The classification of the PII entity.</summary>
+        </member>
+        <member name="P:AIGuard.NET.Models.PiiEntity.OriginalValue">
+            <summary>The original, unredacted value found in the content.</summary>
+        </member>
+        <member name="P:AIGuard.NET.Models.PiiEntity.RedactedValue">
+            <summary>
+            The redacted or masked replacement value (e.g., "***-**-1234" for an SSN).
+            </summary>
+        </member>
+        <member name="P:AIGuard.NET.Models.PiiEntity.StartIndex">
+            <summary>The zero-based character index where the entity starts in the original text.</summary>
+        </member>
+        <member name="P:AIGuard.NET.Models.PiiEntity.Length">
+            <summary>The character length of the original entity value.</summary>
+        </member>
+        <member name="T:AIGuard.NET.Models.PiiEntityType">
+            <summary>
+            Identifies the type of personally identifiable information (PII) detected in content.
+            </summary>
+        </member>
+        <member name="F:AIGuard.NET.Models.PiiEntityType.Email">
+            <summary>
+            An email address (e.g., user@example.com).
+            </summary>
+        </member>
+        <member name="F:AIGuard.NET.Models.PiiEntityType.Phone">
+            <summary>
+            A phone number in any recognized format.
+            </summary>
+        </member>
+        <member name="F:AIGuard.NET.Models.PiiEntityType.SSN">
+            <summary>
+            A U.S. Social Security Number (SSN).
+            </summary>
+        </member>
+        <member name="F:AIGuard.NET.Models.PiiEntityType.CreditCard">
+            <summary>
+            A credit or debit card number.
+            </summary>
+        </member>
+        <member name="F:AIGuard.NET.Models.PiiEntityType.IpAddress">
+            <summary>
+            An IPv4 or IPv6 network address.
+            </summary>
+        </member>
+        <member name="F:AIGuard.NET.Models.PiiEntityType.DateOfBirth">
+            <summary>
+            A date of birth.
+            </summary>
+        </member>
+        <member name="F:AIGuard.NET.Models.PiiEntityType.Address">
+            <summary>
+            A physical or mailing address.
+            </summary>
+        </member>
+        <member name="F:AIGuard.NET.Models.PiiEntityType.Custom">
+            <summary>
+            A custom, user-defined PII entity type.
+            </summary>
+        </member>
+        <member name="T:AIGuard.NET.Models.PiiRedactionResult">
+            <summary>
+            Represents the result of a PII redaction operation, containing the sanitized text
+            and details of all detected PII entities.
+            </summary>
+            <param name="OriginalText">The original, unmodified input text.</param>
+            <param name="SanitizedText">The text after all detected PII entities have been redacted.</param>
+            <param name="DetectedEntities">The collection of PII entities that were detected and redacted.</param>
+        </member>
+        <member name="M:AIGuard.NET.Models.PiiRedactionResult.#ctor(System.String,System.String,System.Collections.Generic.IReadOnlyList{AIGuard.NET.Models.PiiEntity})">
+            <summary>
+            Represents the result of a PII redaction operation, containing the sanitized text
+            and details of all detected PII entities.
+            </summary>
+            <param name="OriginalText">The original, unmodified input text.</param>
+            <param name="SanitizedText">The text after all detected PII entities have been redacted.</param>
+            <param name="DetectedEntities">The collection of PII entities that were detected and redacted.</param>
+        </member>
+        <member name="P:AIGuard.NET.Models.PiiRedactionResult.OriginalText">
+            <summary>The original, unmodified input text.</summary>
+        </member>
+        <member name="P:AIGuard.NET.Models.PiiRedactionResult.SanitizedText">
+            <summary>The text after all detected PII entities have been redacted.</summary>
+        </member>
+        <member name="P:AIGuard.NET.Models.PiiRedactionResult.DetectedEntities">
+            <summary>The collection of PII entities that were detected and redacted.</summary>
+        </member>
+        <member name="P:AIGuard.NET.Models.PiiRedactionResult.HasDetections">
+            <summary>
+            Gets a value indicating whether any PII entities were detected in the original text.
+            </summary>
+        </member>
+        <member name="T:AIGuard.NET.Models.ThreatAction">
+            <summary>
+            Specifies the action to take when a threat or policy violation is detected.
+            </summary>
+        </member>
+        <member name="F:AIGuard.NET.Models.ThreatAction.Allow">
+            <summary>
+            Allow the content to pass through without modification.
+            </summary>
+        </member>
+        <member name="F:AIGuard.NET.Models.ThreatAction.Block">
+            <summary>
+            Block the content entirely and prevent further processing.
+            </summary>
+        </member>
+        <member name="F:AIGuard.NET.Models.ThreatAction.Sanitize">
+            <summary>
+            Sanitize the content by removing or redacting the offending portions.
+            </summary>
+        </member>
+        <member name="F:AIGuard.NET.Models.ThreatAction.Log">
+            <summary>
+            Log the threat for auditing purposes but allow the content to proceed.
+            </summary>
+        </member>
+        <member name="T:AIGuard.NET.Models.ValidationContext">
+            <summary>
+            Provides contextual information to validators during validation execution.
+            </summary>
+        </member>
+        <member name="F:AIGuard.NET.Models.ValidationContext.Default">
+            <summary>
+            Gets a default, empty validation context.
+            </summary>
+        </member>
+        <member name="P:AIGuard.NET.Models.ValidationContext.OriginalInput">
+            <summary>
+            Gets or sets the original input prompt sent to the AI model.
+            </summary>
+        </member>
+        <member name="P:AIGuard.NET.Models.ValidationContext.ModelId">
+            <summary>
+            Gets or sets the model identifier (e.g., "gpt-4", "claude-3").
+            </summary>
+        </member>
+        <member name="P:AIGuard.NET.Models.ValidationContext.ConversationId">
+            <summary>
+            Gets or sets the conversation or request identifier for correlation.
+            </summary>
+        </member>
+        <member name="P:AIGuard.NET.Models.ValidationContext.Metadata">
+            <summary>
+            Gets the additional metadata dictionary for extensibility.
+            </summary>
+        </member>
+        <member name="P:AIGuard.NET.Models.ValidationContext.Items">
+            <summary>
+            Gets the items dictionary for passing data between validators in a pipeline.
+            </summary>
+        </member>
+        <member name="T:AIGuard.NET.Models.ValidationResult">
+            <summary>
+            Represents the result of a validation operation performed by a single validator.
+            </summary>
+            <param name="IsValid">Whether the validation passed.</param>
+            <param name="Message">An optional summary message describing the result.</param>
+            <param name="Confidence">
+            A confidence score between 0.0 and 1.0 indicating how confident the validator is in its result.
+            A value of 1.0 means absolute certainty. Values outside the range are automatically clamped.
+            </param>
+            <param name="ValidatorName">The name of the validator that produced this result.</param>
+            <param name="Violations">The list of violations detected during validation, if any.</param>
+        </member>
+        <member name="M:AIGuard.NET.Models.ValidationResult.#ctor(System.Boolean,System.String,System.Double,System.String,System.Collections.Generic.IReadOnlyList{AIGuard.NET.Models.ValidationViolation})">
+            <summary>
+            Represents the result of a validation operation performed by a single validator.
+            </summary>
+            <param name="IsValid">Whether the validation passed.</param>
+            <param name="Message">An optional summary message describing the result.</param>
+            <param name="Confidence">
+            A confidence score between 0.0 and 1.0 indicating how confident the validator is in its result.
+            A value of 1.0 means absolute certainty. Values outside the range are automatically clamped.
+            </param>
+            <param name="ValidatorName">The name of the validator that produced this result.</param>
+            <param name="Violations">The list of violations detected during validation, if any.</param>
+        </member>
+        <member name="P:AIGuard.NET.Models.ValidationResult.IsValid">
+            <summary>Whether the validation passed.</summary>
+        </member>
+        <member name="P:AIGuard.NET.Models.ValidationResult.Message">
+            <summary>An optional summary message describing the result.</summary>
+        </member>
+        <member name="P:AIGuard.NET.Models.ValidationResult.ValidatorName">
+            <summary>The name of the validator that produced this result.</summary>
+        </member>
+        <member name="P:AIGuard.NET.Models.ValidationResult.Violations">
+            <summary>The list of violations detected during validation, if any.</summary>
+        </member>
+        <member name="P:AIGuard.NET.Models.ValidationResult.Confidence">
+            <summary>
+            Gets the confidence score, clamped to the [0, 1] range.
+            </summary>
+        </member>
+        <member name="M:AIGuard.NET.Models.ValidationResult.Pass(System.String)">
+            <summary>
+            Creates a passing validation result with no violations and full confidence.
+            </summary>
+            <param name="validatorName">The name of the validator.</param>
+            <returns>A passing <see cref="T:AIGuard.NET.Models.ValidationResult"/>.</returns>
+        </member>
+        <member name="M:AIGuard.NET.Models.ValidationResult.Fail(System.String,System.String,System.Double,System.Collections.Generic.IReadOnlyList{AIGuard.NET.Models.ValidationViolation})">
+            <summary>
+            Creates a failing validation result with the specified message and violations.
+            </summary>
+            <param name="validatorName">The name of the validator.</param>
+            <param name="message">A summary message describing the failure.</param>
+            <param name="confidence">The confidence score for the failure determination (defaults to 1.0).</param>
+            <param name="violations">The list of violations detected. If <c>null</c>, an empty list is used.</param>
+            <returns>A failing <see cref="T:AIGuard.NET.Models.ValidationResult"/>.</returns>
+        </member>
+        <member name="T:AIGuard.NET.Models.ValidationViolation">
+            <summary>
+            Represents a specific rule violation detected during validation.
+            </summary>
+            <param name="Rule">The name or identifier of the rule that was violated.</param>
+            <param name="Description">A human-readable description of the violation.</param>
+            <param name="Severity">
+            The severity of the violation on a continuous scale from 0.0 (informational) to 1.0 (critical).
+            Values outside the range are automatically clamped.
+            </param>
+            <param name="SuggestedFix">
+            An optional suggestion for how to fix or remediate the violation.
+            </param>
+            <param name="Position">
+            The optional zero-based character position in the content where the violation starts.
+            </param>
+            <param name="Length">
+            The optional length (in characters) of the offending content span.
+            </param>
+        </member>
+        <member name="M:AIGuard.NET.Models.ValidationViolation.#ctor(System.String,System.String,System.Double,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32})">
+            <summary>
+            Represents a specific rule violation detected during validation.
+            </summary>
+            <param name="Rule">The name or identifier of the rule that was violated.</param>
+            <param name="Description">A human-readable description of the violation.</param>
+            <param name="Severity">
+            The severity of the violation on a continuous scale from 0.0 (informational) to 1.0 (critical).
+            Values outside the range are automatically clamped.
+            </param>
+            <param name="SuggestedFix">
+            An optional suggestion for how to fix or remediate the violation.
+            </param>
+            <param name="Position">
+            The optional zero-based character position in the content where the violation starts.
+            </param>
+            <param name="Length">
+            The optional length (in characters) of the offending content span.
+            </param>
+        </member>
+        <member name="P:AIGuard.NET.Models.ValidationViolation.Rule">
+            <summary>The name or identifier of the rule that was violated.</summary>
+        </member>
+        <member name="P:AIGuard.NET.Models.ValidationViolation.Description">
+            <summary>A human-readable description of the violation.</summary>
+        </member>
+        <member name="P:AIGuard.NET.Models.ValidationViolation.SuggestedFix">
+            <summary>
+            An optional suggestion for how to fix or remediate the violation.
+            </summary>
+        </member>
+        <member name="P:AIGuard.NET.Models.ValidationViolation.Position">
+            <summary>
+            The optional zero-based character position in the content where the violation starts.
+            </summary>
+        </member>
+        <member name="P:AIGuard.NET.Models.ValidationViolation.Length">
+            <summary>
+            The optional length (in characters) of the offending content span.
+            </summary>
+        </member>
+        <member name="P:AIGuard.NET.Models.ValidationViolation.Severity">
+            <summary>
+            Gets the severity of the violation, clamped to the [0, 1] range.
+            </summary>
+        </member>
+        <member name="T:AIGuard.NET.Models.ValidatorType">
+            <summary>
+            Specifies when a validator should be applied in the AI pipeline.
+            </summary>
+        </member>
+        <member name="F:AIGuard.NET.Models.ValidatorType.Input">
+            <summary>
+            Validates input content before it is sent to the AI model.
+            </summary>
+        </member>
+        <member name="F:AIGuard.NET.Models.ValidatorType.Output">
+            <summary>
+            Validates output content received from the AI model.
+            </summary>
+        </member>
+        <member name="F:AIGuard.NET.Models.ValidatorType.Both">
+            <summary>
+            Validates both input and output content.
+            </summary>
+        </member>
+        <member name="T:AIGuard.NET.Pipeline.GuardPipeline">
+            <summary>
+            Core pipeline engine that orchestrates the ordered execution of
+            <see cref="T:AIGuard.NET.Validators.IGuardValidator"/> instances against textual content.
+            </summary>
+            <remarks>
+            <para>
+            Validators are partitioned by <see cref="T:AIGuard.NET.Models.ValidatorType"/> and executed in
+            ascending <see cref="P:AIGuard.NET.Validators.IGuardValidator.Order"/>. Input validators run before
+            output validators when <see cref="M:AIGuard.NET.Pipeline.GuardPipeline.ExecuteAsync(System.String,AIGuard.NET.Models.ValidationContext,System.Threading.CancellationToken)"/> is called.
+            </para>
+            <para>
+            The pipeline respects <see cref="P:AIGuard.NET.AIGuardOptions.StopOnFirstFailure"/>,
+            <see cref="P:AIGuard.NET.AIGuardOptions.Timeout"/>, and <see cref="P:AIGuard.NET.AIGuardOptions.MaxRetries"/>.
+            </para>
+            </remarks>
+        </member>
+        <member name="M:AIGuard.NET.Pipeline.GuardPipeline.#ctor(System.Collections.Generic.IReadOnlyList{AIGuard.NET.Validators.IGuardValidator},AIGuard.NET.AIGuardOptions,Microsoft.Extensions.Logging.ILogger{AIGuard.NET.Pipeline.GuardPipeline})">
+            <summary>
+            Initializes a new <see cref="T:AIGuard.NET.Pipeline.GuardPipeline"/>.
+            </summary>
+            <param name="validators">
+            The ordered collection of validators to execute. Must not be <see langword="null"/>.
+            </param>
+            <param name="options">Pipeline configuration options.</param>
+            <param name="logger">
+            Optional logger instance. When <see langword="null"/>, a no-op logger is used.
+            </param>
+            <exception cref="T:System.ArgumentNullException">
+            Thrown when <paramref name="validators"/> or <paramref name="options"/> is <see langword="null"/>.
+            </exception>
+        </member>
+        <member name="M:AIGuard.NET.Pipeline.GuardPipeline.ExecuteAsync(System.String,AIGuard.NET.Models.ValidationContext,System.Threading.CancellationToken)">
+            <summary>
+            Executes both input and output validators against the supplied content.
+            Input validators run first (ordered by <see cref="P:AIGuard.NET.Validators.IGuardValidator.Order"/>),
+            followed by output validators.
+            </summary>
+            <param name="input">The text to validate.</param>
+            <param name="context">
+            Optional <see cref="T:AIGuard.NET.Models.ValidationContext"/> carrying additional metadata.
+            A default context is created when <see langword="null"/>.
+            </param>
+            <param name="ct">Cancellation token.</param>
+            <returns>A <see cref="T:AIGuard.NET.Models.GuardResult"/> summarising the full pipeline run.</returns>
+        </member>
+        <member name="M:AIGuard.NET.Pipeline.GuardPipeline.ValidateInputAsync(System.String,AIGuard.NET.Models.ValidationContext,System.Threading.CancellationToken)">
+            <summary>
+            Runs only the input-side validators (those with <see cref="F:AIGuard.NET.Models.ValidatorType.Input"/>
+            or <see cref="F:AIGuard.NET.Models.ValidatorType.Both"/>).
+            </summary>
+            <param name="input">The text to validate as input.</param>
+            <param name="context">Optional validation context.</param>
+            <param name="ct">Cancellation token.</param>
+            <returns>A <see cref="T:AIGuard.NET.Models.GuardResult"/> with only input validation results populated.</returns>
+        </member>
+        <member name="M:AIGuard.NET.Pipeline.GuardPipeline.ValidateOutputAsync(System.String,AIGuard.NET.Models.ValidationContext,System.Threading.CancellationToken)">
+            <summary>
+            Runs only the output-side validators (those with <see cref="F:AIGuard.NET.Models.ValidatorType.Output"/>
+            or <see cref="F:AIGuard.NET.Models.ValidatorType.Both"/>).
+            </summary>
+            <param name="output">The text to validate as output.</param>
+            <param name="context">Optional validation context.</param>
+            <param name="ct">Cancellation token.</param>
+            <returns>A <see cref="T:AIGuard.NET.Models.GuardResult"/> with only output validation results populated.</returns>
+        </member>
+        <member name="M:AIGuard.NET.Pipeline.GuardPipeline.RunValidatorsAsync(AIGuard.NET.Models.ValidatorType,System.String,AIGuard.NET.Models.ValidationContext,System.Threading.CancellationToken)">
+            <summary>
+            Runs the validators matching <paramref name="phase"/> in ascending order,
+            applying retry logic, confidence filtering, and early-termination.
+            </summary>
+        </member>
+        <member name="M:AIGuard.NET.Pipeline.GuardPipeline.ExecuteWithRetryAsync(AIGuard.NET.Validators.IGuardValidator,System.String,AIGuard.NET.Models.ValidationContext,System.Threading.CancellationToken)">
+            <summary>
+            Executes a single validator with retry semantics.
+            </summary>
+        </member>
+        <member name="M:AIGuard.NET.Pipeline.GuardPipeline.CreateTimeoutCts(System.Threading.CancellationToken)">
+            <summary>
+            Creates a linked <see cref="T:System.Threading.CancellationTokenSource"/> that will cancel
+            after the configured <see cref="P:AIGuard.NET.AIGuardOptions.Timeout"/>.
+            </summary>
+        </member>
+        <member name="M:AIGuard.NET.Pipeline.GuardPipeline.BuildGuardResult(System.String,System.Collections.Generic.List{AIGuard.NET.Models.ValidationResult},System.Collections.Generic.List{AIGuard.NET.Models.ValidationResult},System.TimeSpan)">
+            <summary>
+            Builds the final <see cref="T:AIGuard.NET.Models.GuardResult"/> from the collected validation results.
+            </summary>
+        </member>
+        <member name="M:AIGuard.NET.Pipeline.GuardPipeline.LogAudit(AIGuard.NET.Models.GuardResult)">
+            <summary>
+            Emits a structured audit-log entry for a completed pipeline run.
+            </summary>
+        </member>
+        <member name="T:AIGuard.NET.Validators.IGuardValidator">
+            <summary>
+            Defines the contract for an AI guard validator.
+            </summary>
+        </member>
+        <member name="P:AIGuard.NET.Validators.IGuardValidator.Type">
+            <summary>
+            Gets the type of validator (Input, Output, or Both).
+            </summary>
+        </member>
+        <member name="P:AIGuard.NET.Validators.IGuardValidator.Name">
+            <summary>
+            Gets the name of the validator.
+            </summary>
+        </member>
+        <member name="P:AIGuard.NET.Validators.IGuardValidator.Order">
+            <summary>
+            Gets the execution order of the validator. Lower values run first.
+            </summary>
+        </member>
+        <member name="M:AIGuard.NET.Validators.IGuardValidator.ValidateAsync(System.String,AIGuard.NET.Models.ValidationContext,System.Threading.CancellationToken)">
+            <summary>
+            Validates the given content.
+            </summary>
+            <param name="content">The content to validate.</param>
+            <param name="context">The validation context.</param>
+            <param name="ct">Cancellation token.</param>
+            <returns>A validation result.</returns>
+        </member>
+        <member name="T:AIGuard.NET.Validators.Input.PiiRedactionValidator">
+            <summary>
+            Detects and flags personally identifiable information (PII) in the input.
+            </summary>
+        </member>
+        <member name="M:AIGuard.NET.Validators.Input.PiiRedactionValidator.EmailRegex">
+            <remarks>
+            Pattern:<br/>
+            <code>\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Z|a-z]{2,}\\b</code><br/>
+            Explanation:<br/>
+            <code>
+            ○ Match if at a word boundary.<br/>
+            ○ Match a character in the set [%+-.0-9A-Z_a-z] atomically at least once.<br/>
+            ○ Match '@'.<br/>
+            ○ Match a character in the set [-.0-9A-Za-z] greedily at least once.<br/>
+            ○ Match '.'.<br/>
+            ○ Match a character in the set [A-Za-z|] greedily at least twice.<br/>
+            ○ Match if at a word boundary.<br/>
+            </code>
+            </remarks>
+        </member>
+        <member name="M:AIGuard.NET.Validators.Input.PiiRedactionValidator.SsnRegex">
+            <remarks>
+            Pattern:<br/>
+            <code>\\b\\d{3}-\\d{2}-\\d{4}\\b</code><br/>
+            Explanation:<br/>
+            <code>
+            ○ Match if at a word boundary.<br/>
+            ○ Match a Unicode digit exactly 3 times.<br/>
+            ○ Match '-'.<br/>
+            ○ Match a Unicode digit exactly 2 times.<br/>
+            ○ Match '-'.<br/>
+            ○ Match a Unicode digit exactly 4 times.<br/>
+            ○ Match if at a word boundary.<br/>
+            </code>
+            </remarks>
+        </member>
+        <member name="T:AIGuard.NET.Validators.Input.PromptInjectionValidator">
+            <summary>
+            Detects prompt injection attacks in the input content.
+            </summary>
+        </member>
+        <member name="T:AIGuard.NET.Validators.Input.EstimationMethod">
+            <summary>
+            Methods for estimating token counts.
+            </summary>
+        </member>
+        <member name="F:AIGuard.NET.Validators.Input.EstimationMethod.CharBased">
+            <summary>
+            Uses character count divided by 4 as a rough estimation.
+            </summary>
+        </member>
+        <member name="F:AIGuard.NET.Validators.Input.EstimationMethod.WordBased">
+            <summary>
+            Uses word count multiplied by 1.3 as a rough estimation.
+            </summary>
+        </member>
+        <member name="T:AIGuard.NET.Validators.Input.TokenBudgetValidator">
+            <summary>
+            Enforces a token limit on the input content.
+            </summary>
+        </member>
+        <member name="T:AIGuard.NET.Validators.Output.JsonSchemaValidator">
+            <summary>
+            Validates that the model output is valid JSON and matches a specific JSON Schema.
+            </summary>
+        </member>
+        <member name="M:AIGuard.NET.Validators.Output.JsonSchemaValidator.GenerateSchemaFromType``1">
+            <summary>
+            Generates a basic JSON Schema from a C# type (stub implementation).
+            </summary>
+        </member>
+        <member name="T:AIGuard.NET.Validators.Output.ResponseLengthValidator">
+            <summary>
+            Validates that the response length falls within specified character or word limits.
+            </summary>
+        </member>
+        <member name="T:AIGuard.NET.Validators.Output.ToxicityValidator">
+            <summary>
+            Detects toxic, harmful, or policy-violating content in model outputs.
+            </summary>
+        </member>
+        <member name="T:AIGuard.NET.Validators.Output.TypeSchemaValidator`1">
+            <summary>
+            Validates that the model output can be deserialized into type T and passes data annotations validation.
+            </summary>
+        </member>
+        <member name="T:AIGuard.NET.Validators.ValidatorBase">
+            <summary>
+            Abstract base class for all validators in the AIGuard.NET pipeline.
+            Provides common structure including name, type, and execution order.
+            </summary>
+        </member>
+        <member name="P:AIGuard.NET.Validators.ValidatorBase.Name">
+            <summary>
+            Gets the display name of this validator. Defaults to the type name.
+            </summary>
+        </member>
+        <member name="P:AIGuard.NET.Validators.ValidatorBase.Type">
+            <summary>
+            Gets the type of this validator, indicating whether it validates input, output, or both.
+            </summary>
+        </member>
+        <member name="P:AIGuard.NET.Validators.ValidatorBase.Order">
+            <summary>
+            Gets the execution order of this validator within the pipeline.
+            Lower values execute first.
+            </summary>
+        </member>
+        <member name="M:AIGuard.NET.Validators.ValidatorBase.ValidateAsync(System.String,AIGuard.NET.Models.ValidationContext,System.Threading.CancellationToken)">
+            <summary>
+            Validates the specified content asynchronously.
+            </summary>
+            <param name="content">The text content to validate.</param>
+            <param name="context">The validation context providing additional metadata.</param>
+            <param name="cancellationToken">A token to cancel the operation.</param>
+            <returns>A <see cref="T:AIGuard.NET.Models.ValidationResult"/> indicating the outcome of the validation.</returns>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Generated.EmailRegex_0">
+            <summary>Custom <see cref="T:System.Text.RegularExpressions.Regex"/>-derived type for the EmailRegex method.</summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.Generated.EmailRegex_0.Instance">
+            <summary>Cached, thread-safe singleton instance.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.EmailRegex_0.#ctor">
+            <summary>Initializes the instance.</summary>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Generated.EmailRegex_0.RunnerFactory">
+            <summary>Provides a factory for creating <see cref="T:System.Text.RegularExpressions.RegexRunner"/> instances to be used by methods on <see cref="T:System.Text.RegularExpressions.Regex"/>.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.EmailRegex_0.RunnerFactory.CreateInstance">
+            <summary>Creates an instance of a <see cref="T:System.Text.RegularExpressions.RegexRunner"/> used by methods on <see cref="T:System.Text.RegularExpressions.Regex"/>.</summary>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Generated.EmailRegex_0.RunnerFactory.Runner">
+            <summary>Provides the runner that contains the custom logic implementing the specified regular expression.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.EmailRegex_0.RunnerFactory.Runner.Scan(System.ReadOnlySpan{System.Char})">
+            <summary>Scan the <paramref name="inputSpan"/> starting from base.runtextstart for the next match.</summary>
+            <param name="inputSpan">The text being scanned by the regular expression.</param>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.EmailRegex_0.RunnerFactory.Runner.TryFindNextPossibleStartingPosition(System.ReadOnlySpan{System.Char})">
+            <summary>Search <paramref name="inputSpan"/> starting from base.runtextpos for the next location a match could possibly start.</summary>
+            <param name="inputSpan">The text being scanned by the regular expression.</param>
+            <returns>true if a possible match was found; false if no more matches are possible.</returns>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.EmailRegex_0.RunnerFactory.Runner.TryMatchAtCurrentPosition(System.ReadOnlySpan{System.Char})">
+            <summary>Determine whether <paramref name="inputSpan"/> at base.runtextpos is a match for the regular expression.</summary>
+            <param name="inputSpan">The text being scanned by the regular expression.</param>
+            <returns>true if the regular expression matches at the current position; otherwise, false.</returns>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Generated.SsnRegex_1">
+            <summary>Custom <see cref="T:System.Text.RegularExpressions.Regex"/>-derived type for the SsnRegex method.</summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.Generated.SsnRegex_1.Instance">
+            <summary>Cached, thread-safe singleton instance.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.SsnRegex_1.#ctor">
+            <summary>Initializes the instance.</summary>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Generated.SsnRegex_1.RunnerFactory">
+            <summary>Provides a factory for creating <see cref="T:System.Text.RegularExpressions.RegexRunner"/> instances to be used by methods on <see cref="T:System.Text.RegularExpressions.Regex"/>.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.SsnRegex_1.RunnerFactory.CreateInstance">
+            <summary>Creates an instance of a <see cref="T:System.Text.RegularExpressions.RegexRunner"/> used by methods on <see cref="T:System.Text.RegularExpressions.Regex"/>.</summary>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Generated.SsnRegex_1.RunnerFactory.Runner">
+            <summary>Provides the runner that contains the custom logic implementing the specified regular expression.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.SsnRegex_1.RunnerFactory.Runner.Scan(System.ReadOnlySpan{System.Char})">
+            <summary>Scan the <paramref name="inputSpan"/> starting from base.runtextstart for the next match.</summary>
+            <param name="inputSpan">The text being scanned by the regular expression.</param>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.SsnRegex_1.RunnerFactory.Runner.TryFindNextPossibleStartingPosition(System.ReadOnlySpan{System.Char})">
+            <summary>Search <paramref name="inputSpan"/> starting from base.runtextpos for the next location a match could possibly start.</summary>
+            <param name="inputSpan">The text being scanned by the regular expression.</param>
+            <returns>true if a possible match was found; false if no more matches are possible.</returns>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.SsnRegex_1.RunnerFactory.Runner.TryMatchAtCurrentPosition(System.ReadOnlySpan{System.Char})">
+            <summary>Determine whether <paramref name="inputSpan"/> at base.runtextpos is a match for the regular expression.</summary>
+            <param name="inputSpan">The text being scanned by the regular expression.</param>
+            <returns>true if the regular expression matches at the current position; otherwise, false.</returns>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Generated.Utilities">
+            <summary>Helper methods used by generated <see cref="T:System.Text.RegularExpressions.Regex"/>-derived implementations.</summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_defaultTimeout">
+            <summary>Default timeout value set in <see cref="T:System.AppContext"/>, or <see cref="F:System.Text.RegularExpressions.Regex.InfiniteMatchTimeout"/> if none was set.</summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_hasTimeout">
+            <summary>Whether <see cref="F:System.Text.RegularExpressions.Generated.Utilities.s_defaultTimeout"/> is non-infinite.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.Utilities.IsBoundary(System.ReadOnlySpan{System.Char},System.Int32)">
+            <summary>Determines whether the specified index is a boundary.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.Utilities.IsWordChar(System.Char)">
+            <summary>Determines whether the character is part of the [\w] set.</summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_ascii_2068FF03FEFFFF87FEFFFF07">
+            <summary>Supports searching for characters in or not in "%+-.0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz".</summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_ascii_60FF03FEFFFF07FEFFFF07">
+            <summary>Supports searching for characters in or not in "-.0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".</summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_ascii_FEFFFF07FEFFFF17">
+            <summary>Supports searching for characters in or not in "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz|".</summary>
+        </member>
+    </members>
+</doc>

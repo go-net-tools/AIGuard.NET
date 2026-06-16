@@ -1,0 +1,14 @@
+E:\Utility\src\AIGuard.NET\obj\Debug\net9.0\AIGuard.NET.csproj.AssemblyReference.cache
+E:\Utility\src\AIGuard.NET\obj\Debug\net9.0\AIGuard.NET.GeneratedMSBuildEditorConfig.editorconfig
+E:\Utility\src\AIGuard.NET\obj\Debug\net9.0\AIGuard.NET.AssemblyInfoInputs.cache
+E:\Utility\src\AIGuard.NET\obj\Debug\net9.0\AIGuard.NET.AssemblyInfo.cs
+E:\Utility\src\AIGuard.NET\obj\Debug\net9.0\AIGuard.NET.csproj.CoreCompileInputs.cache
+E:\Utility\src\AIGuard.NET\obj\Debug\net9.0\AIGuard.NET.xml
+E:\Utility\src\AIGuard.NET\bin\Debug\net9.0\AIGuard.NET.deps.json
+E:\Utility\src\AIGuard.NET\bin\Debug\net9.0\AIGuard.NET.dll
+E:\Utility\src\AIGuard.NET\bin\Debug\net9.0\AIGuard.NET.pdb
+E:\Utility\src\AIGuard.NET\bin\Debug\net9.0\AIGuard.NET.xml
+E:\Utility\src\AIGuard.NET\obj\Debug\net9.0\AIGuard.NET.dll
+E:\Utility\src\AIGuard.NET\obj\Debug\net9.0\refint\AIGuard.NET.dll
+E:\Utility\src\AIGuard.NET\obj\Debug\net9.0\AIGuard.NET.pdb
+E:\Utility\src\AIGuard.NET\obj\Debug\net9.0\ref\AIGuard.NET.dll
