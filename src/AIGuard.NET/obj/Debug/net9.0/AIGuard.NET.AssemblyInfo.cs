@@ -17,7 +17,7 @@ using System.Reflection;
     "I redaction, LLM output schema enforcement, hallucination detection, and more. T" +
     "he Guardrails AI equivalent for .NET."))]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("0.1.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("0.1.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("0.1.0+61a8bd251ce7593e7c6993c35261109f0e423dc7")]
 [assembly: System.Reflection.AssemblyProductAttribute("AIGuard.NET")]
 [assembly: System.Reflection.AssemblyTitleAttribute("AIGuard.NET")]
 [assembly: System.Reflection.AssemblyVersionAttribute("0.1.0.0")]

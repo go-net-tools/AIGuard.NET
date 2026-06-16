@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyCopyrightAttribute("Copyright (c) go-net-tools 2026")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+61a8bd251ce7593e7c6993c35261109f0e423dc7")]
 [assembly: System.Reflection.AssemblyProductAttribute("AIGuard.NET.Tests")]
 [assembly: System.Reflection.AssemblyTitleAttribute("AIGuard.NET.Tests")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

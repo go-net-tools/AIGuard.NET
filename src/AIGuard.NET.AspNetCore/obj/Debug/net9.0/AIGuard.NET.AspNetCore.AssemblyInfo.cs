@@ -16,7 +16,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyDescriptionAttribute(("ASP.NET Core integration for AIGuard.NET — middleware, DI registration, and attri" +
     "bute-based AI endpoint protection."))]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("0.1.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("0.1.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("0.1.0+61a8bd251ce7593e7c6993c35261109f0e423dc7")]
 [assembly: System.Reflection.AssemblyProductAttribute("AIGuard.NET.AspNetCore")]
 [assembly: System.Reflection.AssemblyTitleAttribute("AIGuard.NET.AspNetCore")]
 [assembly: System.Reflection.AssemblyVersionAttribute("0.1.0.0")]

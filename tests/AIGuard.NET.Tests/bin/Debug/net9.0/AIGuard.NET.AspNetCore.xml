@@ -4,5 +4,15 @@
         <name>AIGuard.NET.AspNetCore</name>
     </assembly>
     <members>
+        <member name="T:AIGuard.NET.AspNetCore.DependencyInjection.ServiceCollectionExtensions">
+            <summary>
+            Extension methods for setting up AIGuard.NET services in an <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection" />.
+            </summary>
+        </member>
+        <member name="M:AIGuard.NET.AspNetCore.DependencyInjection.ServiceCollectionExtensions.AddAIGuard(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Action{AIGuard.NET.AIGuardBuilder})">
+            <summary>
+            Adds AIGuard.NET services to the specified <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection" />.
+            </summary>
+        </member>
     </members>
 </doc>

@@ -766,6 +766,54 @@
             Emits a structured audit-log entry for a completed pipeline run.
             </summary>
         </member>
+        <member name="T:AIGuard.NET.Retry.ILlmClient">
+            <summary>
+            Abstraction for calling a Large Language Model (LLM).
+            Used by the RetryEngine to request corrections.
+            </summary>
+        </member>
+        <member name="M:AIGuard.NET.Retry.ILlmClient.GenerateContentAsync(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Generates content from the given prompt.
+            </summary>
+        </member>
+        <member name="T:AIGuard.NET.Retry.RetryEngine">
+            <summary>
+            Orchestrates an automatic feedback loop where invalid AI outputs are sent back
+            to the LLM with error details for self-correction.
+            </summary>
+        </member>
+        <member name="M:AIGuard.NET.Retry.RetryEngine.#ctor(AIGuard.NET.Retry.ILlmClient,AIGuard.NET.AIGuard)">
+            <summary>
+            Initializes a new RetryEngine.
+            </summary>
+        </member>
+        <member name="M:AIGuard.NET.Retry.RetryEngine.ExecuteWithRetryAsync(System.String,System.Int32,System.Threading.CancellationToken)">
+            <summary>
+            Executes a prompt, validating the output, and automatically reprompting the LLM
+            if violations occur, up to the maximum number of retries.
+            </summary>
+        </member>
+        <member name="T:AIGuard.NET.Retry.RetryResult">
+            <summary>
+            Represents the final outcome of a retry-enabled guard execution.
+            </summary>
+        </member>
+        <member name="M:AIGuard.NET.Retry.RetryResult.#ctor(System.Boolean,System.String,AIGuard.NET.Models.GuardResult,System.Int32,System.Collections.Generic.IReadOnlyList{AIGuard.NET.Models.GuardResult})">
+            <summary>
+            Represents the final outcome of a retry-enabled guard execution.
+            </summary>
+        </member>
+        <member name="T:AIGuard.NET.Schema.SchemaExtractor">
+            <summary>
+            Extracts JSON Schema from C# types using .NET 9's built-in schema generation.
+            </summary>
+        </member>
+        <member name="M:AIGuard.NET.Schema.SchemaExtractor.GenerateJsonSchema``1(System.Text.Json.JsonSerializerOptions)">
+            <summary>
+            Generates a JSON Schema representation for type T.
+            </summary>
+        </member>
         <member name="T:AIGuard.NET.Validators.IGuardValidator">
             <summary>
             Defines the contract for an AI guard validator.

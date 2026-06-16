@@ -250,7 +250,8 @@
   },
   "projectFileDependencyGroups": {
     "net9.0": [
-      "AIGuard.NET >= 0.1.0"
+      "AIGuard.NET >= 0.1.0",
+      "Microsoft.Extensions.DependencyInjection.Abstractions >= 9.0.0"
     ]
   },
   "packageFolders": {
@@ -308,6 +309,12 @@
     "frameworks": {
       "net9.0": {
         "targetAlias": "net9.0",
+        "dependencies": {
+          "Microsoft.Extensions.DependencyInjection.Abstractions": {
+            "target": "Package",
+            "version": "[9.0.0, )"
+          }
+        },
         "imports": [
           "net461",
           "net462",
