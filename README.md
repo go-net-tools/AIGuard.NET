@@ -2,6 +2,7 @@
 
 [![.NET 9](https://img.shields.io/badge/.NET-9.0-purple.svg)](https://dotnet.microsoft.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![NuGet](https://img.shields.io/nuget/v/AIGuard.NET.svg)](https://www.nuget.org/packages/AIGuard.NET)
 
 **AIGuard.NET** is a powerful, extensible open-source developer utility for building safe, reliable, and predictable AI applications in .NET. It provides composable guardrails, schema enforcement, hallucination detection, and an automatic self-correction engine for Large Language Models (LLMs).
 
@@ -21,7 +22,7 @@ Unlike Python-first tools, AIGuard.NET is built from the ground up for the .NET 
 
 ## 📦 Installation
 
-*(Coming Soon to NuGet)*
+Available on [NuGet](https://www.nuget.org/packages/AIGuard.NET/):
 ```bash
 dotnet add package AIGuard.NET
 dotnet add package AIGuard.NET.AspNetCore
